@@ -102,7 +102,7 @@ lastcol = ncols - 1
 
 
 # Derived values
-if plate_style in ['NUB', 'HS_NUB']:
+if plate_style in ['NUB', 'HS_NUB', 'HS_CHOC_NUB']:
     keyswitch_height = nub_keyswitch_height
     keyswitch_width = nub_keyswitch_width
 elif plate_style in ['UNDERCUT', 'HS_UNDERCUT', 'NOTCH', 'HS_NOTCH']:
@@ -112,9 +112,13 @@ else:
     keyswitch_height = hole_keyswitch_height
     keyswitch_width = hole_keyswitch_width
 
-if 'HS_' in plate_style:
+if 'HS_CHOC' in plate_style:
     symmetry = "asymmetric"
-    plate_file = path.join(parts_path, r"hot_swap_plate")
+    plate_file = path.join(parts_path, r"hot_swap_plate_choc")
+    plate_offset = 0.0
+elif 'HS_' in plate_style:
+    symmetry = "asymmetric"
+    plate_file = path.join(parts_path, r"hot_swap_plate_choc")
     plate_offset = 0.0
 
 if (trackball_in_wall or ('TRACKBALL' in thumb_style)) and not ball_side == 'both':
@@ -170,6 +174,9 @@ if not path.isdir(save_path):
 
 def column_offset(column: int) -> list:
     return column_offsets[column]
+
+def column_alpha_offset(column: int) -> float:
+    return column_alpha_offsets[column]
 
 # column_style='fixed'
 
@@ -389,6 +396,8 @@ def choc_cap(Usize=1):
     # MODIFIED TO NOT HAVE THE ROTATION.  NEEDS ROTATION DURING ASSEMBLY
     # sa_length = 18.25
 
+    # chocs don't support larger sizes
+    Usize = 1
     if Usize == 1:
         bl2 = 18.0/2
         bw2 = 17.5/2
@@ -481,7 +490,7 @@ def apply_key_geometry(
     if column_style == "orthographic":
         column_z_delta = column_radius * (1 - np.cos(column_angle))
         shape = translate_fn(shape, [0, 0, -row_radius])
-        shape = rotate_x_fn(shape, alpha * (centerrow - row))
+        shape = rotate_x_fn(shape, alpha * (centerrow - row) + column_alpha_offset(column))
         shape = translate_fn(shape, [0, 0, row_radius])
         shape = rotate_y_fn(shape, column_angle)
         shape = translate_fn(
@@ -493,14 +502,14 @@ def apply_key_geometry(
         shape = rotate_y_fn(shape, fixed_angles[column])
         shape = translate_fn(shape, [fixed_x[column], 0, fixed_z[column]])
         shape = translate_fn(shape, [0, 0, -(row_radius + fixed_z[column])])
-        shape = rotate_x_fn(shape, alpha * (centerrow - row))
+        shape = rotate_x_fn(shape, alpha * (centerrow - row) + column_alpha_offset(column))
         shape = translate_fn(shape, [0, 0, row_radius + fixed_z[column]])
         shape = rotate_y_fn(shape, fixed_tenting)
         shape = translate_fn(shape, [0, column_offset(column)[1], 0])
 
     else:
         shape = translate_fn(shape, [0, 0, -row_radius])
-        shape = rotate_x_fn(shape, alpha * (centerrow - row))
+        shape = rotate_x_fn(shape, alpha * (centerrow - row) + column_alpha_offset(column))
         shape = translate_fn(shape, [0, 0, row_radius])
         shape = translate_fn(shape, [0, 0, -column_radius])
         shape = rotate_y_fn(shape, column_angle)
@@ -1528,43 +1537,50 @@ def minidox_thumb_connectors():
 # Carbonfet THUMB CLUSTER
 ############################
 
-
 def carbonfet_thumb_tl_place(shape):
     shape = rotate(shape, [10, -24, 10])
     shape = translate(shape, thumborigin())
     shape = translate(shape, [-13, -9.8, 4])
+    shape = translate(shape, carbonfet_thumb_offsets[0])
     return shape
 
 def carbonfet_thumb_tr_place(shape):
     shape = rotate(shape, [6, -25, 10])
+    shape = rotate(shape, [carbonfet_right_angle_offset, 0, 0])
     shape = translate(shape, thumborigin())
     shape = translate(shape, [-7.5, -29.5, 0])
+    shape = translate(shape, carbonfet_thumb_offsets[1])
     return shape
 
 def carbonfet_thumb_ml_place(shape):
     shape = rotate(shape, [8, -31, 14])
     shape = translate(shape, thumborigin())
     shape = translate(shape, [-30.5, -17, -6])
+    shape = translate(shape, carbonfet_thumb_offsets[2])
     return shape
 
 def carbonfet_thumb_mr_place(shape):
     shape = rotate(shape, [4, -31, 14])
+    shape = rotate(shape, [carbonfet_right_angle_offset, 0, 0])
     shape = translate(shape, thumborigin())
     shape = translate(shape, [-22.2, -41, -10.3])
-    return shape
-
-def carbonfet_thumb_br_place(shape):
-    shape = rotate(shape, [2, -37, 18])
-    shape = translate(shape, thumborigin())
-    shape = translate(shape, [-37, -46.4, -22])
+    shape = translate(shape, carbonfet_thumb_offsets[3])
     return shape
 
 def carbonfet_thumb_bl_place(shape):
     shape = rotate(shape, [6, -37, 18])
     shape = translate(shape, thumborigin())
     shape = translate(shape, [-47, -23, -19])
+    shape = translate(shape, carbonfet_thumb_offsets[4])
     return shape
 
+def carbonfet_thumb_br_place(shape):
+    shape = rotate(shape, [2, -37, 18])
+    shape = rotate(shape, [carbonfet_right_angle_offset, 0, 0])
+    shape = translate(shape, thumborigin())
+    shape = translate(shape, [-37, -46.4, -22])
+    shape = translate(shape, carbonfet_thumb_offsets[5])
+    return shape
 
 def carbonfet_thumb_1x_layout(shape):
     return union([
@@ -3325,9 +3341,6 @@ def trrs_hole():
     trrs_position[1] = trrs_position[1] + trrs_offset[1]
     trrs_position[2] = trrs_position[2] + trrs_offset[2]
 
-    trrs_hole_size = [3, 20]
-
-
     shape = cylinder(*trrs_hole_size)
     shape = rotate(shape, [0, 90, 90])
     shape = translate(shape,
@@ -3335,6 +3348,24 @@ def trrs_hole():
             trrs_position[0],
             trrs_position[1],
             trrs_hole_size[0] + pcb_holder_thickness,
+        )
+    )
+    return shape
+
+def trrs_screw_hole():
+    debugprint('trrs_scew_hole()')
+    screw_hole_position = copy.deepcopy(pcb_mount_ref_position)
+    screw_hole_position[0] = screw_hole_position[0] + trrs_screw_offset[0]
+    screw_hole_position[1] = screw_hole_position[1] + trrs_screw_offset[1]
+    screw_hole_position[2] = screw_hole_position[2] + trrs_screw_offset[2]
+
+    shape = cylinder(*trrs_screw_hole_size)
+    shape = rotate(shape, [0, 90, 90])
+    shape = translate(shape,
+        (
+            screw_hole_position[0],
+            screw_hole_position[1],
+            trrs_screw_hole_size[0] + pcb_holder_thickness + screw_hole_position[2],
         )
     )
     return shape
@@ -4043,7 +4074,7 @@ def model_side(side="right"):
     if controller_mount_type in ['RJ9_USB_TEENSY', 'USB_TEENSY']:
         s2 = union([s2, teensy_holder()])
 
-    if controller_mount_type in ['RJ9_USB_TEENSY', 'RJ9_USB_WALL', 'USB_WALL', 'USB_TEENSY']:
+    if controller_mount_type in ['TINY_XLR_USB_WALL', 'RJ9_USB_TEENSY', 'RJ9_USB_WALL', 'USB_WALL', 'USB_TEENSY']:
         s2 = union([s2, usb_holder()])
         s2 = difference(s2, [usb_holder_hole()])
 
@@ -4056,6 +4087,7 @@ def model_side(side="right"):
     if controller_mount_type in ['PCB_MOUNT']:
         s2 = difference(s2, [pcb_usb_hole()])
         s2 = difference(s2, [trrs_hole()])
+        s2 = difference(s2, [trrs_screw_hole()])
         s2 = union([s2, pcb_holder()])
         s2 = difference(s2, [wall_thinner()])
         s2 = difference(s2, pcb_screw_hole())
