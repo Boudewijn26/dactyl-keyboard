@@ -1,8 +1,8 @@
 {
-    "ENGINE": "cadquery",
+    "ENGINE": "solid",
     "save_dir": ".",
     "config_name": "DM",
-    "show_caps": false,
+    "show_caps": "CHOC",
     "show_pcbs": false,
     "nrows": 4,
     "ncols": 5,
@@ -10,7 +10,7 @@
     "beta": 0.09519969696969696,
     "centercol": 2.5,
     "centerrow_offset": 3,
-    "tenting_angle": 0.3490655555555555,
+    "tenting_angle": 0.24434588888888886,
     "symmetry": "symmetric",
     "column_style_gt5": "orthographic",
     "column_style": "standard",
@@ -21,13 +21,15 @@
         0,
         0
     ],
-    "keyboard_z_offset": 15,
+    "keyboard_z_offset": 17,
     "extra_width": 2,
-    "extra_height": -3.0,
+    "extra_height": -4.5,
     "web_thickness": 3,
     "post_size": 0.1,
     "post_adj": 0,
-    "thumb_style": "CARBONFET",
+    "flatpacked": true,
+    "flatpacked_thickness": 2.0,
+    "thumb_style": "DACTYLIC",
     "default_1U_cluster": true,
     "minidox_Usize": 1.6,
     "mini_index_key": true,
@@ -182,6 +184,43 @@
     "thumb_plate_ml_rotation": 0.0,
     "thumb_plate_br_rotation": 0.0,
     "thumb_plate_bl_rotation": 0.0,
+    "thumb_ncols": 3,
+    "thumb_nrows": 2,
+    "thumb_alpha": 0.44879857142857144,
+    "thumb_beta": 0.44879857142857144,
+    "thumb_centercol": 0,
+    "thumb_tenting_angle": -0.26179916666666664,
+    "thumb_centerrow_offset": 1.5,
+    "thumb_extra_width": -2,
+    "thumb_extra_height": -4,
+    "thumb_yaw": 0.26179916666666664,
+    "thumb_offset": [
+        -100,
+        -40,
+        5
+    ],
+    "thumb_column_offsets": [
+        [
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            0
+        ]
+    ],
+    "thumb_column_alpha_offsets": [
+        0,
+        0,
+        0
+    ],
     "separable_thumb": false,
     "trackball_in_wall": false,
     "tbiw_ball_center_row": 0.2,
@@ -354,7 +393,7 @@
         17.5
     ],
     "fixed_tenting": 0.0,
-    "plate_style": "HS_CHOC_NUB",
+    "plate_style": "HOLE",
     "hole_keyswitch_height": 14.0,
     "hole_keyswitch_width": 14.0,
     "nub_keyswitch_height": 14.4,
@@ -366,7 +405,8 @@
     "sa_length": 18.5,
     "sa_double_length": 37.5,
     "plate_thickness": 3,
-    "plate_rim": 2.0,
+    "plate_rim_horizontal": 2.0,
+    "plate_rim_vertical": 3.0,
     "clip_thickness": 1.1,
     "clip_undercut": 1.0,
     "undercut_transition": 0.2,
@@ -550,7 +590,7 @@
     "base_rim_thickness": 5.0,
     "screw_cbore_diameter": 6.0,
     "screw_cbore_depth": 2.5,
-    "plate_holes": true,
+    "plate_holes": false,
     "plate_holes_xy_offset": [
         0.0,
         0.0

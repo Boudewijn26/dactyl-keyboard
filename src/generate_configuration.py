@@ -10,8 +10,8 @@ r2d = 180 / pi
 
 shape_config = {
 
-    # 'ENGINE': 'solid',  # 'solid' = solid python / OpenSCAD, 'cadquery' = cadquery / OpenCascade
-    'ENGINE': 'cadquery',  # 'solid' = solid python / OpenSCAD, 'cadquery' = cadquery / OpenCascade
+    'ENGINE': 'solid',  # 'solid' = solid python / OpenSCAD, 'cadquery' = cadquery / OpenCascade
+    # 'ENGINE': 'cadquery',  # 'solid' = solid python / OpenSCAD, 'cadquery' = cadquery / OpenCascade
 
 
     ######################
@@ -21,8 +21,8 @@ shape_config = {
     'save_dir': '.',
     'config_name':  "DM",
 
-    # 'show_caps': 'CHOC',
-    'show_caps': False,
+    'show_caps': 'CHOC',
+    # 'show_caps': False,
     'show_pcbs': False, #only runs if caps are shown, easist place to initially inject geometry
 
     'nrows':  4, #5,  # key rows
@@ -32,7 +32,7 @@ shape_config = {
     'beta':  pi / 33.0,  # curvature of the rows
     'centercol':  2.5,  # controls left_right tilt / tenting (higher number is more tenting)
     'centerrow_offset':  3,  # rows from max, controls front_back tilt
-    'tenting_angle':  20.0 * d2r,  # or, change this for more precise tenting control
+    'tenting_angle':  14.0 * d2r,  # or, change this for more precise tenting control
 
     # symmetry states if it is a symmetric or asymmetric bui.  If asymmetric it doubles the generation time.
     'symmetry':  "symmetric",  # "asymmetric" or "symmetric"
@@ -45,12 +45,12 @@ shape_config = {
 
     'thumb_offsets':  [0, 0, 0],
     'keyboard_z_offset':  (
-        15  # controls overall height# original=9 with centercol=3# use 16 for centercol=2
+        17  # controls overall height# original=9 with centercol=3# use 16 for centercol=2
     ),
 
 
     'extra_width': 2,  # extra space between the base of keys# original= 2
-    'extra_height': -3.0,  # original= 0.5
+    'extra_height': -4.5,  # original= 0.5
 
 
     'web_thickness': 3,
@@ -58,12 +58,16 @@ shape_config = {
     # post_adj':  post_size / 2
     'post_adj': 0,
 
+    # 'flatpacked': False,
+    'flatpacked': True,
+    'flatpacked_thickness': 2.0,
+
     ##############################
     # THUMB PARAMETERS
     ##############################
 
-    # 'DEFAULT' 6-key, 'MINI' 5-key, 'CARBONFET' 6-key, 'MINIDOX' 3-key, 'TRACKBALL_ORBYL', 'TRACKBALL_CJ'
-    'thumb_style': 'CARBONFET',
+    # 'DEFAULT' 6-key, 'MINI' 5-key, 'CARBONFET' 6-key, 'MINIDOX' 3-key, 'TRACKBALL_ORBYL', 'TRACKBALL_CJ', 'DACTYLIC'
+    'thumb_style': 'DACTYLIC',
     'default_1U_cluster': True, # only used with default, makes top right thumb cluster key 1U
     # Thumb key size.  May need slight oversizing, check w/ caps.  Additional spacing will be automatically added for larger keys.
     'minidox_Usize': 1.6,
@@ -99,6 +103,35 @@ shape_config = {
     'thumb_plate_ml_rotation': 0.0,  # Mid left plate rotation tweaks as thumb cluster is crowded for hot swap, etc.
     'thumb_plate_br_rotation': 0.0,  # Bottom right plate rotation tweaks as thumb cluster is crowded for hot swap, etc.
     'thumb_plate_bl_rotation': 0.0,  # Bottom right plate rotation tweaks as thumb cluster is crowded for hot swap, etc.
+
+    'thumb_ncols': 3,
+    'thumb_nrows': 2,
+
+    'thumb_alpha': pi / 7, #pi / 40.5, # curvature of the columns
+    'thumb_beta': pi / 7.0, # curvature of the rows
+    'thumb_centercol': 0, # controls left_right tilt / tenting (higher number is more tenting)
+    'thumb_tenting_angle': -15.0 * d2r,  # or, change this for more precise tenting control
+    'thumb_centerrow_offset': 1.5,  # rows from max, controls front_back tilt
+
+    'thumb_extra_width': -2,
+    'thumb_extra_height': -4,
+
+    'thumb_yaw': 15 * d2r,
+
+    'thumb_offset': [-100, -40, 5],
+
+    'thumb_column_offsets':  [
+        [0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0],
+    ],
+
+    'thumb_column_alpha_offsets': [
+        0,
+        0,
+        0,
+    ],
+
     ##############################
     # EXPERIMENTAL
     'separable_thumb': False,  #creates a separable thumb section with additional screws to hold it down.  Only attached at base.
@@ -243,7 +276,7 @@ shape_config = {
     # 'HS_UNDERCUT' = hot swap underside with undercut. Does not generate properly.  Hot swap step needs to be modified.
     # 'HS_NOTCH' = hot swap underside with notch.  Does not generate properly.  Hot swap step needs to be modified.
     # 'plate_style':  'NUB',
-    'plate_style': 'HS_CHOC_NUB',
+    'plate_style': 'HOLE',
 
     'hole_keyswitch_height':  14.0,
     'hole_keyswitch_width':  14.0,
@@ -260,7 +293,8 @@ shape_config = {
     'sa_double_length': 37.5,
     'plate_thickness':  3,
 
-    'plate_rim': 1.5 + 0.5,
+    'plate_rim_horizontal': 1.5 + 0.5,
+    'plate_rim_vertical': 1.5 + 1.5,
     # Undercut style dimensions
     'clip_thickness':  1.1,
     'clip_undercut':  1.0,
@@ -439,7 +473,7 @@ shape_config = {
     ###################################
     ## HOLES ON PLATE FOR PCB MOUNT
     ###################################
-    'plate_holes':  True,
+    'plate_holes':  False,
     'plate_holes_xy_offset': (0.0, 0.0),
     'plate_holes_width': 14.3,
     'plate_holes_height': 14.3,

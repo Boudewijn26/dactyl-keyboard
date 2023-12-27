@@ -2,6 +2,8 @@ import solid as sl
 
 debug_trace = False
 
+color = sl.color
+
 def debugprint(info):
     if debug_trace:
         print(info)
@@ -123,6 +125,7 @@ def bottom_hull(p, height=0.001):
         t_shape = sl.translate([0, 0, height / 2 - 10])(t_shape)
         if shape is None:
             shape = t_shape
+
         shape = sl.hull()(p, shape, t_shape)
     return shape
 
