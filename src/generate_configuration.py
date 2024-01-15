@@ -62,6 +62,9 @@ shape_config = {
     'flatpacked': True,
     'flatpacked_thickness': 2.0,
 
+    'flatpacked_finger_joint_min_size': 2.0 * 2, # minimum size of the fingers in the flatpacked base finger joint (minimum length = 3 times thing: 1 finger, 2 braces)
+    'flatpacked_finger_joint_max_size': 2.0 * 4, # maximum size of the fingers in the flatpacked base finger joint
+
     ##############################
     # THUMB PARAMETERS
     ##############################

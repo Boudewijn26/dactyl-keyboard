@@ -29,6 +29,8 @@
     "post_adj": 0,
     "flatpacked": true,
     "flatpacked_thickness": 2.0,
+    "flatpacked_finger_joint_min_size": 4.0,
+    "flatpacked_finger_joint_max_size": 8.0,
     "thumb_style": "DACTYLIC",
     "default_1U_cluster": true,
     "minidox_Usize": 1.6,
