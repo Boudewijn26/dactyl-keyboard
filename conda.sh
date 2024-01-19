@@ -69,6 +69,10 @@ inform "Installing solidpython..."
 
 pip install solidpython
 
+inform "Installing svgpathtools..."
+
+pip install svgpathtools
+
 inform "Updating conda dependencies..."
 
 conda update --all -y

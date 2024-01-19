@@ -132,6 +132,8 @@ def bottom_hull(p, height=0.001):
 def polyline(point_list):
     return sl.polygon(point_list)
 
+def project(shape):
+    return sl.projection()(shape)
 
 # def project_to_plate():
 #     square = cq.Workplane('XY').rect(1000, 1000)

@@ -123,7 +123,7 @@ if flatpacked:
     plate_style = "FLATPACKED"
     flatpacked_slot_width = flatpacked_thickness
     flatpacked_slot_height = flatpacked_thickness / 2
-    flatpacked_key_support_height = plate_thickness * 1.75
+    flatpacked_key_support_height = plate_thickness * 1.5
     flatpacked_thumb_key_support_height = plate_thickness * 1.5
     flatpacked_base_support_offset = flatpacked_thickness
 
@@ -399,6 +399,10 @@ def single_plate(cylinder_segments=100, side="right"):
         plate = mirror(plate, "YZ")
 
     return plate
+
+
+def single_plate_poly(side="right"):
+    return project(single_plate(side))
 
 
 def plate_pcb_cutout(side="right"):
@@ -758,6 +762,7 @@ def key_holes(side="right", cluster="main"):
 
     # hole = single_plate()
     holes = []
+    hole_polys = []
     for column in range(_ncols):
         for row in range(_nrows):
             if (
@@ -768,8 +773,13 @@ def key_holes(side="right", cluster="main"):
                 holes.append(
                     key_place(single_plate(side=side), column, row, cluster=cluster)
                 )
+                if flatpacked:
+                    hole_polys.append(single_plate_poly(side=side))
 
     shape = union(holes)
+
+    if flatpacked:
+        return shape, arrange_polys(hole_polys)
 
     return shape
 
@@ -949,10 +959,13 @@ def key_supports(cluster):
     print("key_supports()")
     _ncols = thumb_ncols if cluster == "thumb" else ncols
     supports = [
-        [key_support(i, "left", cluster), key_support(i, "right", cluster)]
+        key_support(i, side, cluster)
         for i in range(_ncols)
+        for side in ["left", "right"]
     ]
-    return union(side for sides in supports for side in sides)
+    return union(support for support, _ in supports), arrange_polys(
+        [poly for _, poly in supports]
+    )
 
 
 def key_support_offset(column_side, face):
@@ -1094,8 +1107,16 @@ def key_support(column, column_side, cluster):
 
     _, _, z = planar_points[0]  # use any z plane point to translate z lost by polyline
 
-    return union(
-        [y_rot(translate(extruded, (0, 0, z)), c_angle + _tenting_angle + deg2rad(90))]
+    return (
+        union(
+            [
+                y_rot(
+                    translate(extruded, (0, 0, z)),
+                    c_angle + _tenting_angle + deg2rad(90),
+                )
+            ]
+        ),
+        poly,
     )
 
 
@@ -1179,9 +1200,13 @@ def key_support_combine_bottom_points(key_support_points, cuts):
 
 def base_supports(cluster):
     print("base_supports()")
-    top, top_corners = base_support("top", cluster)
-    bottom, bottom_corners = base_support("bottom", cluster)
-    return union([top, bottom]), [*top_corners, *bottom_corners]
+    top, top_corners, top_poly = base_support("top", cluster)
+    bottom, bottom_corners, bottom_poly = base_support("bottom", cluster)
+    return (
+        union([top, bottom]),
+        [*top_corners, *bottom_corners],
+        arrange_polys([top_poly, bottom_poly]),
+    )
 
 
 def base_support_key_support_intersection(
@@ -1338,19 +1363,24 @@ def base_support(vside="top", cluster="main"):
             (right_edge_x, right_edge_z),
             (right_corner_x, right_corner_z),
             (right_corner_x, z_origin),
-            *fingers
+            *fingers,
         ]
     )
 
-    return translate(
-        x_rot(extrude_poly(poly, height=flatpacked_thickness), deg2rad(90)), (0, y, 0)
-    ), [(left_corner_x, y, z_origin), (right_corner_x, y, z_origin)]
+    return (
+        translate(
+            x_rot(extrude_poly(poly, height=flatpacked_thickness), deg2rad(90)),
+            (0, y, 0),
+        ),
+        [(left_corner_x, y, z_origin), (right_corner_x, y, z_origin)],
+        poly,
+    )
 
 
 ##########################
 ## Flatpacked baseplate ##
 ##########################
-def finger_joint(x_start, x_end, z, inverted=False, position='upright'):
+def finger_joint(x_start, x_end, z, inverted=False, position="upright"):
     """Returns the coordinates for a finger joint between x_start and x_end at z (assuming z is the bottom of the joint)"""
     length = abs(x_end - x_start)
     min_division = length / flatpacked_finger_joint_min_size
@@ -1380,37 +1410,89 @@ def finger_joint(x_start, x_end, z, inverted=False, position='upright'):
 
     return corners
 
+
 def flatpacked_baseplate(side, main_corners, thumb_corners):
     def _thumb_transform(points):
-        return [add_translate(rotate_around_z((x, y, 0), thumb_yaw), thumb_offset) for x, y in points]
-    
+        return [
+            add_translate(rotate_around_z((x, y, 0), thumb_yaw), thumb_offset)
+            for x, y in points
+        ]
+
     def _offset_top(point):
         x, y, _ = point
         return (x, y + flatpacked_thickness / 2)
-    
+
     def _offset_bottom(point):
         x, y, _ = point
         return (x, y - flatpacked_thickness / 2)
 
     main_top_left, main_top_right, main_bottom_left, main_bottom_right = main_corners
-    thumb_top_left, thumb_top_right, thumb_bottom_left, thumb_bottom_right = thumb_corners
+    (
+        thumb_top_left,
+        thumb_top_right,
+        thumb_bottom_left,
+        thumb_bottom_right,
+    ) = thumb_corners
 
-    main_top_finger_joints = finger_joint(main_top_left[0], main_top_right[0], main_top_left[1] - (flatpacked_thickness / 2), inverted=False)
-    main_bottom_finger_joints = finger_joint(main_bottom_right[0], main_bottom_left[0], main_bottom_left[1] - (flatpacked_thickness / 2), inverted=True)
-    thumb_bottom_finger_joints = _thumb_transform(finger_joint(thumb_bottom_right[0], thumb_bottom_left[0], thumb_bottom_left[1] - (flatpacked_thickness / 2), inverted=True))
-    thumb_top_finger_joints = _thumb_transform(finger_joint(thumb_top_left[0], thumb_top_right[0], thumb_top_left[1] - (flatpacked_thickness / 2)))
+    main_top_finger_joints = finger_joint(
+        main_top_left[0],
+        main_top_right[0],
+        main_top_left[1] - (flatpacked_thickness / 2),
+        inverted=False,
+    )
+    main_bottom_finger_joints = finger_joint(
+        main_bottom_right[0],
+        main_bottom_left[0],
+        main_bottom_left[1] - (flatpacked_thickness / 2),
+        inverted=True,
+    )
+    thumb_bottom_finger_joints = _thumb_transform(
+        finger_joint(
+            thumb_bottom_right[0],
+            thumb_bottom_left[0],
+            thumb_bottom_left[1] - (flatpacked_thickness / 2),
+            inverted=True,
+        )
+    )
+    thumb_top_finger_joints = _thumb_transform(
+        finger_joint(
+            thumb_top_left[0],
+            thumb_top_right[0],
+            thumb_top_left[1] - (flatpacked_thickness / 2),
+        )
+    )
 
-    poly = polyline([
-        *main_top_finger_joints,
-        *main_bottom_finger_joints,
-        _offset_bottom(main_bottom_left),
-        *thumb_bottom_finger_joints,
-        *thumb_top_finger_joints,
-        *_thumb_transform([_offset_top(thumb_top_right)]),
-        main_top_finger_joints[0]
-    ])
+    poly = polyline(
+        [
+            *main_top_finger_joints,
+            *main_bottom_finger_joints,
+            _offset_bottom(main_bottom_left),
+            *thumb_bottom_finger_joints,
+            *thumb_top_finger_joints,
+            *_thumb_transform([_offset_top(thumb_top_right)]),
+            main_top_finger_joints[0],
+        ]
+    )
 
-    return translate(extrude_poly(poly, height=flatpacked_thickness), (0, 0, flatpacked_thickness / 2))
+    return (
+        translate(
+            extrude_poly(poly, height=flatpacked_thickness),
+            (0, 0, flatpacked_thickness / 2),
+        ),
+        arrange_polys([poly]),
+    )
+
+
+poly_y = [0]
+
+
+def arrange_polys(polys):
+    result = [
+        translate(poly, [index * 200, poly_y[0], 0]) for index, poly in enumerate(polys)
+    ]
+    poly_y[0] = poly_y[0] + 200
+    return union(result)
+
 
 ############
 ## Thumbs ##
@@ -6681,21 +6763,32 @@ def model_side(side="right"):
     print("model_right()")
 
     if flatpacked:
-        main_base_support, main_base_corners = base_supports(cluster="main")
+        main_key_holes, main_key_holes_poly = key_holes(side=side)
+        main_base_support, main_base_corners, main_base_supports_poly = base_supports(
+            cluster="main"
+        )
+        main_key_supports, main_key_supports_poly = key_supports(cluster="main")
 
         shape = union(
             [
-                key_holes(side=side),
-                color([1, 0, 0], 0.5)(key_supports(cluster="main")),
+                main_key_holes,
+                color([1, 0, 0], 0.5)(main_key_supports),
                 color([0, 1, 0], 0.5)(main_base_support),
             ]
         )
 
-        thumb_base_support, thumb_base_corners = base_supports(cluster="thumb")
+        thumb_key_holes, thumb_key_holes_poly = key_holes(side=side, cluster="thumb")
+        thumb_key_supports, thumb_key_supports_poly = key_supports(cluster="thumb")
+        (
+            thumb_base_support,
+            thumb_base_corners,
+            thumb_base_supports_poly,
+        ) = base_supports(cluster="thumb")
+
         thumb_section = union(
             [
-                key_holes(side=side, cluster="thumb"),
-                color([1, 0, 0], 0.5)(key_supports(cluster="thumb")),
+                thumb_key_holes,
+                color([1, 0, 0], 0.5)(thumb_key_supports),
                 color([0, 1, 0], 0.5)(thumb_base_support),
             ]
         )
@@ -6706,9 +6799,29 @@ def model_side(side="right"):
         thumb_section = z_rot(thumb_section, thumb_yaw)
         thumb_section = translate(thumb_section, thumb_offset)
 
-        base = color([0, 0, 1], 0.5)(baseplate(side="right", main_corners=main_base_corners, thumb_corners=thumb_base_corners))
+        base, base_poly = baseplate(
+            side="right",
+            main_corners=main_base_corners,
+            thumb_corners=thumb_base_corners,
+        )
+        base = color([0, 0, 1], 0.5)(base)
 
         main_shape = union([shape, thumb_section, base])
+
+        export_file(
+            shape=union(
+                [
+                    main_base_supports_poly,
+                    main_key_supports_poly,
+                    main_key_holes_poly,
+                    thumb_base_supports_poly,
+                    thumb_key_supports_poly,
+                    thumb_key_holes_poly,
+                    base_poly
+                ]
+            ),
+            fname=path.join(r"..", "things", r"polys"),
+        )
     else:
         # shape = add([key_holes(side=side)])
         shape = union([key_holes(side=side)])
@@ -6964,7 +7077,9 @@ def model_side(side="right"):
 # def baseplate(main_shape, base_shape, wedge_angle=None, side='right'):
 def baseplate(wedge_angle=None, side="right", main_corners=None, thumb_corners=None):
     if flatpacked and main_corners and thumb_corners:
-        return flatpacked_baseplate(side=side, main_corners=main_corners, thumb_corners=thumb_corners)
+        return flatpacked_baseplate(
+            side=side, main_corners=main_corners, thumb_corners=thumb_corners
+        )
 
     if ENGINE == "cadquery":
         # shape = mod_r
