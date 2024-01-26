@@ -17,21 +17,22 @@ units = {
 }
 
 mm2units = 90 / 25.4
-thickness = 2.0 * mm2units
+# thickness = 2.0 * mm2units
+break_length = 0.5 * mm2units
 
-t_length = (0.5 * mm2units) / thickness
-t_thickness_first = 0.5 - (t_length / 2)
-t_thickness_second = 0.5 + (t_length / 2)
-break_spacing = 15.0 * mm2units
+# t_length = (0.5 * mm2units) / thickness
+# t_thickness_first = 0.5 - (t_length / 2)
+# t_thickness_second = 0.5 + (t_length / 2)
+minimum_break_length = 5.5 * mm2units
+break_spacing = 18.0 * mm2units
 
 extra_cut = (153.857 - 152.859) * mm2units
 
 
-print(t_thickness_first)
-print(t_thickness_second)
-
-
-def cut_segment(segment, t_first, t_second):
+def cut_segment(segment):
+    t_length = break_length / segment.length()
+    t_first = 0.5 - (t_length / 2)
+    t_second = 0.5 + (t_length / 2)
     start, _ = segment.split(t_first)
     _, end = segment.split(t_second)
 
@@ -48,18 +49,12 @@ for p_index, path in enumerate(paths):
     treated = False
 
     for index, line in enumerate(path):
-        # if line.length() > 161:
-        #     print(line.start.real)
-        #     print(line.start.imag)
-        #     print(line)
-        # print(line.length())
-        if current_spacing >= break_spacing and (
-            ((thickness - 0.08) < line.length() < (thickness + 0.08))
-            or ((extra_cut - 0.08) < line.length() < (extra_cut + 0.08))
+        if (current_spacing + line.length() / 2) >= break_spacing and (
+            line.length() > minimum_break_length
         ):
             treated = True
-            segments.extend(cut_segment(line, t_thickness_first, t_thickness_second))
-            current_spacing = 0.0
+            segments.extend(cut_segment(line))
+            current_spacing = line.length() / 2
         else:
             segments.append(line)
             current_spacing = current_spacing + line.length()
@@ -67,11 +62,11 @@ for p_index, path in enumerate(paths):
     if treated:
         broken_paths.append(Path(*segments))
     else:
-        lengths = sorted([line.length() for line in path])
-        if lengths[0] > 49:  # cut out for the keys
-            broken_paths.append(path)
-        else:
-            print(f"uncut: {p_index}, {lengths[0:10]}")
+        print(f"uncut: {p_index}, {lengths[0:10]}")
+        # lengths = sorted([line.length() for line in path])
+        # if lengths[0] > 49:  # cut out for the keys
+        #     broken_paths.append(path)
+        # else:
 
 # print(broken_paths)
 wsvg(
