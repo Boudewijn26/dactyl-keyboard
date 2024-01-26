@@ -32,7 +32,7 @@ shape_config = {
     'beta':  pi / 33.0,  # curvature of the rows
     'centercol':  2.5,  # controls left_right tilt / tenting (higher number is more tenting)
     'centerrow_offset':  3,  # rows from max, controls front_back tilt
-    'tenting_angle':  14.0 * d2r,  # or, change this for more precise tenting control
+    'tenting_angle': 35.0 * d2r,  # or, change this for more precise tenting control
 
     # symmetry states if it is a symmetric or asymmetric bui.  If asymmetric it doubles the generation time.
     'symmetry':  "symmetric",  # "asymmetric" or "symmetric"
@@ -42,10 +42,8 @@ shape_config = {
     'reduced_inner_cols': 2,  #currently supports 0 or 2 due to thumb cluster attachment
     'reduced_outer_cols': 1,
 
-
-    'thumb_offsets':  [0, 0, 0],
     'keyboard_z_offset':  (
-        17  # controls overall height# original=9 with centercol=3# use 16 for centercol=2
+        27  # controls overall height# original=9 with centercol=3# use 16 for centercol=2
     ),
 
 
@@ -61,9 +59,17 @@ shape_config = {
     # 'flatpacked': False,
     'flatpacked': True,
     'flatpacked_thickness': 2.0,
+    'flatpacked_key_support_end_margin': 2.0, # extra straight bit after and before the keys in the key supports
+    'flatpacked_base_support_joint_side_margin': 1.0, # extra straight bit added to base supports at joint with key support
 
     'flatpacked_finger_joint_min_size': 2.0 * 2, # minimum size of the fingers in the flatpacked base finger joint (minimum length = 3 times thing: 1 finger, 2 braces)
     'flatpacked_finger_joint_max_size': 2.0 * 4, # maximum size of the fingers in the flatpacked base finger joint
+
+    'flatpacked_bottom_base_support_cutout': [(20, 43), (0, 70)], # coordinates of a cut out of the bottom base support for an (otherwise) intersecting thumb cluster
+
+    'flatpacked_overextend_cable_cutout_size': 4, # size of the cutout in the base supports for a cable to route through
+
+    'flatpacked_marker_wiggle_size': 0.5, # size of wiggles used to mark different parts
 
     ##############################
     # THUMB PARAMETERS
@@ -119,9 +125,9 @@ shape_config = {
     'thumb_extra_width': -2,
     'thumb_extra_height': -4,
 
-    'thumb_yaw': 15 * d2r,
+    'thumb_yaw': 20 * d2r,
 
-    'thumb_offset': [-100, -40, 5],
+    'thumb_offsets': [-68, -40, 4], # aiming for about 4, 4, 4 cm distances from index home
 
     'thumb_column_offsets':  [
         [0, 0, 0],

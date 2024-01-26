@@ -10,18 +10,13 @@
     "beta": 0.09519969696969696,
     "centercol": 2.5,
     "centerrow_offset": 3,
-    "tenting_angle": 0.24434588888888886,
+    "tenting_angle": 0.6108647222222221,
     "symmetry": "symmetric",
     "column_style_gt5": "orthographic",
     "column_style": "standard",
     "reduced_inner_cols": 2,
     "reduced_outer_cols": 1,
-    "thumb_offsets": [
-        0,
-        0,
-        0
-    ],
-    "keyboard_z_offset": 17,
+    "keyboard_z_offset": 27,
     "extra_width": 2,
     "extra_height": -4.5,
     "web_thickness": 3,
@@ -29,8 +24,22 @@
     "post_adj": 0,
     "flatpacked": true,
     "flatpacked_thickness": 2.0,
+    "flatpacked_key_support_end_margin": 2.0,
+    "flatpacked_base_support_joint_side_margin": 1.0,
     "flatpacked_finger_joint_min_size": 4.0,
     "flatpacked_finger_joint_max_size": 8.0,
+    "flatpacked_bottom_base_support_cutout": [
+        [
+            20,
+            43
+        ],
+        [
+            0,
+            70
+        ]
+    ],
+    "flatpacked_overextend_cable_cutout_size": 4,
+    "flatpacked_marker_wiggle_size": 0.5,
     "thumb_style": "DACTYLIC",
     "default_1U_cluster": true,
     "minidox_Usize": 1.6,
@@ -195,11 +204,11 @@
     "thumb_centerrow_offset": 1.5,
     "thumb_extra_width": -2,
     "thumb_extra_height": -4,
-    "thumb_yaw": 0.26179916666666664,
-    "thumb_offset": [
-        -100,
+    "thumb_yaw": 0.3490655555555555,
+    "thumb_offsets": [
+        -68,
         -40,
-        5
+        4
     ],
     "thumb_column_offsets": [
         [
