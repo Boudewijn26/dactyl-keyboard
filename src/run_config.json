@@ -40,6 +40,7 @@
     ],
     "flatpacked_overextend_cable_cutout_size": 4,
     "flatpacked_marker_wiggle_size": 0.5,
+    "flatpacked_cut_margin": 0.05,
     "thumb_style": "DACTYLIC",
     "default_1U_cluster": true,
     "minidox_Usize": 1.6,

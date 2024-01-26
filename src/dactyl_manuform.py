@@ -1018,8 +1018,8 @@ def key_support_bottom_point(
 # DONE: cut out thumb cluster from base support
 # DONE: cut out cable passthroughs in overextended columns
 # DONE: mark key supports (pattern it somehow)
-# TODO: laser breaks on long segments first
 # TODO: account for laser cut tolerance (~0.2mm), so 0.08 mm larger
+# TODO: laser breaks on long segments first
 
 
 def key_support(column, column_side, cluster):
@@ -1029,20 +1029,43 @@ def key_support(column, column_side, cluster):
 
     start_points = [
         key_position(
-            (offset, (mount_height / 2) + flatpacked_key_support_end_margin, z_offset),
+            (
+                offset,
+                (mount_height / 2)
+                + flatpacked_key_support_end_margin
+                + flatpacked_cut_margin,
+                z_offset,
+            ),
             column,
             0,
             cluster=cluster,
         )
-        for z_offset in [plate_thickness, -flatpacked_key_support_height]
+        for z_offset in [
+            plate_thickness + flatpacked_cut_margin,
+            -flatpacked_key_support_height - flatpacked_cut_margin,
+        ]
     ]
 
     side_wiggle = 1 if column_side == "left" else 2
     cluster_wiggle = ncols if cluster == "thumb" else 0
     wiggles = column * 2 + side_wiggle + cluster_wiggle
     first_bottom_key_start, first_bottom_key_end = [
-        key_support_bottom_point(column_side, column, 0, "top", cluster=cluster),
-        key_support_bottom_point(column_side, column, 0, "bottom", cluster=cluster),
+        key_support_bottom_point(
+            column_side,
+            column,
+            0,
+            "top",
+            cluster=cluster,
+            offsets=(0, 0, -flatpacked_cut_margin),
+        ),
+        key_support_bottom_point(
+            column_side,
+            column,
+            0,
+            "bottom",
+            cluster=cluster,
+            offsets=(0, 0, -flatpacked_cut_margin),
+        ),
     ]
 
     first_bottom_key_points = [
@@ -1055,9 +1078,21 @@ def key_support(column, column_side, cluster):
         point
         for row in range(1, rows_for_column(column, cluster))
         for point in [
-            key_support_bottom_point(column_side, column, row, "top", cluster=cluster),
             key_support_bottom_point(
-                column_side, column, row, "bottom", cluster=cluster
+                column_side,
+                column,
+                row,
+                "top",
+                cluster=cluster,
+                offsets=(0, 0, -flatpacked_cut_margin),
+            ),
+            key_support_bottom_point(
+                column_side,
+                column,
+                row,
+                "bottom",
+                cluster=cluster,
+                offsets=(0, 0, -flatpacked_cut_margin),
             ),
         ]
     ]
@@ -1073,7 +1108,10 @@ def key_support(column, column_side, cluster):
             rows_for_column(column, cluster) - 1,
             cluster=cluster,
         )
-        for z_offset in [-flatpacked_key_support_height, plate_thickness]
+        for z_offset in [
+            -flatpacked_key_support_height - flatpacked_cut_margin,
+            plate_thickness + flatpacked_cut_margin,
+        ]
     ]
 
     # place poly on key plate edges
@@ -1082,34 +1120,45 @@ def key_support(column, column_side, cluster):
         for row in range(rows_for_column(column, cluster))
         for point in [
             key_position(
-                (offset, mount_height / 2, plate_thickness), column, row, cluster
-            ),
-            key_position(
-                (offset, (mount_height / 2) - flatpacked_slot_height, plate_thickness),
+                (offset, mount_height / 2, plate_thickness + flatpacked_cut_margin),
                 column,
                 row,
                 cluster,
             ),
             key_position(
-                (offset, (mount_height / 2) - flatpacked_slot_height, 0),
+                (
+                    offset,
+                    (mount_height / 2) - flatpacked_slot_height - flatpacked_cut_margin,
+                    plate_thickness + flatpacked_cut_margin,
+                ),
                 column,
                 row,
                 cluster,
             ),
             key_position(
-                (offset, (-mount_height / 2) + flatpacked_slot_height, 0),
+                (
+                    offset,
+                    (mount_height / 2) - flatpacked_slot_height - flatpacked_cut_margin,
+                    flatpacked_cut_margin,
+                ),
                 column,
                 row,
                 cluster,
             ),
             key_position(
-                (offset, (-mount_height / 2) + flatpacked_slot_height, plate_thickness),
+                (offset, (-mount_height / 2) + flatpacked_slot_height + flatpacked_cut_margin, flatpacked_cut_margin),
                 column,
                 row,
                 cluster,
             ),
             key_position(
-                (offset, -mount_height / 2, plate_thickness), column, row, cluster
+                (offset, (-mount_height / 2) + flatpacked_slot_height + flatpacked_cut_margin, plate_thickness + flatpacked_cut_margin),
+                column,
+                row,
+                cluster,
+            ),
+            key_position(
+                (offset, -mount_height / 2, plate_thickness + flatpacked_cut_margin), column, row, cluster
             ),
         ]
     ]
@@ -1157,31 +1206,35 @@ def key_support(column, column_side, cluster):
 def key_support_base_support_cuts(column, column_side, cluster):
     def _cut(vside):
         # need to account for the column tilt and take the bigger cut
-        bottom_left = base_support_key_support_intersection(
+        (
+            bottom_left_x,
+            bottom_left_y,
+            bottom_left_z,
+        ) = base_support_key_support_intersection(
             base_support_y(vside, face="top", cluster=cluster),
             column,
             column_side,
             "outside",
             vside,
-            (0, 0, -flatpacked_key_support_joint_height),
+            (0, 0, -flatpacked_key_support_joint_height - flatpacked_cut_margin),
             cluster=cluster,
         )
-        _, y, z = base_support_key_support_intersection(
+        _, _, z = base_support_key_support_intersection(
             base_support_y(vside, face="middle", cluster=cluster),
             column,
             column_side,
             "outside",
             vside,
-            (0, 0, flatpacked_thickness),
+            (0, 0, flatpacked_thickness - flatpacked_cut_margin),
             cluster=cluster,
         )
-        top_left_x, top_left_y, top_left_z = base_support_key_support_intersection(
+        top_left_x, top_left_y, _ = base_support_key_support_intersection(
             base_support_y(vside, face="top", cluster=cluster),
             column,
             column_side,
             "outside",
             vside,
-            (0, 0, flatpacked_thickness),
+            (0, 0, flatpacked_thickness - flatpacked_cut_margin),
             cluster=cluster,
         )
 
@@ -1189,7 +1242,11 @@ def key_support_base_support_cuts(column, column_side, cluster):
         # with higher tents, the intersection starts skewing
         top_right_x, top_right_y = (top_left_x, top_left_y - flatpacked_thickness)
 
-        bottom_right = base_support_key_support_intersection(
+        (
+            bottom_right_x,
+            bottom_right_y,
+            bottom_right_z,
+        ) = base_support_key_support_intersection(
             base_support_y(vside, face="bottom", cluster=cluster),
             column,
             column_side,
@@ -1200,10 +1257,10 @@ def key_support_base_support_cuts(column, column_side, cluster):
         )
 
         return [
-            bottom_left,
-            (top_left_x, top_left_y, z),
-            (top_right_x, top_right_y, z),
-            bottom_right,
+            (bottom_left_x, bottom_left_y - flatpacked_cut_margin, bottom_left_z),
+            (top_left_x, top_left_y - flatpacked_cut_margin, z),
+            (top_right_x, top_right_y + flatpacked_cut_margin, z),
+            (bottom_right_x, bottom_right_y + flatpacked_cut_margin, bottom_right_z),
         ]
 
     return [_cut("top"), _cut("bottom")]
@@ -1371,10 +1428,10 @@ def base_support(vside="top", cluster="main"):
     def _row_intersections(col):
         approach_points = [
             ("outside", -flatpacked_base_support_joint_side_margin, 2),
-            ("outside", 0, 2),
-            ("outside", 0, 1),
-            ("inside", 0, 1),
-            ("inside", 0, 1.75),
+            ("outside", flatpacked_cut_margin, 2),
+            ("outside", flatpacked_cut_margin, 1 + flatpacked_cut_margin),
+            ("inside", -flatpacked_cut_margin, 1 + flatpacked_cut_margin),
+            ("inside", -flatpacked_cut_margin, 1.75),
         ]
         exit_points = reversed(approach_points)
         left_side, right_side = [
@@ -1385,12 +1442,12 @@ def base_support(vside="top", cluster="main"):
                     side,
                     face,
                     vside,
-                    (x_offset, 0, z_offset_mult * flatpacked_thickness),
+                    (x_offset * x_offset_sign, 0, z_offset_mult * flatpacked_thickness),
                     cluster,
                 )
                 for face, x_offset, z_offset_mult in points
             ]
-            for side, points in [("left", approach_points), ("right", exit_points)]
+            for side, points, x_offset_sign in [("left", approach_points, 1), ("right", exit_points, -1)]
         ]
         return [
             *left_side,
@@ -1489,6 +1546,7 @@ def finger_joint(x_start, x_end, z, inverted=False, position="upright"):
     odd_divisions = [div for div in divisions if div % 2 == 1]
     number_of_joints = odd_divisions[floor(len(odd_divisions) / 2)]
 
+    sign = -1 if inverted else 1
     box_size = (length / number_of_joints) * (-1 if x_start > x_end else 1)
 
     # 1: _
@@ -1496,12 +1554,19 @@ def finger_joint(x_start, x_end, z, inverted=False, position="upright"):
     # 3: _|-|_
     # 4: _|-|_|-
 
+    def _otherside(index):
+        if index % 2 == 1:
+            return -1
+        else:
+            return 1
+
+    # using half cut margin, because in this case margin counts double, as both parts of the finger joint have it
     corners = [
         corner
         for index, down in zip(range(number_of_joints), cycle([inverted, not inverted]))
         for corner in [
-            (x_start + (box_size * index), z + (down * flatpacked_thickness)),
-            (x_start + (box_size * (index + 1)), z + (down * flatpacked_thickness)),
+            (x_start + (box_size * index) + (sign * flatpacked_cut_margin / 2 * _otherside(index)), z + (down * (flatpacked_thickness + (-1 * flatpacked_cut_margin)))),
+            (x_start + (box_size * (index + 1)) + (sign * flatpacked_cut_margin / 2 * _otherside(index + 1)), z + (down * (flatpacked_thickness + (-1 * flatpacked_cut_margin)))),
         ]
     ]
 
@@ -1638,16 +1703,7 @@ def key_wiggle(column, row, column_side, amount, cluster):
         for step in [0, 1]
     ]
 
-    print([start, *wiggles, end])
-
     return [start, *wiggles, end]
-    start_x, start_y, start_z = start
-    stop_x, stop_y, stop_z = stop
-
-    middle_x, middle_y, middle_z = [
-        (a + b) / 2
-        for a, b in [(start_x, stop_x), (start_y, stop_y), (start_z, stop_z)]
-    ]
 
 
 ############

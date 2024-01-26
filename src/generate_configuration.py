@@ -71,6 +71,8 @@ shape_config = {
 
     'flatpacked_marker_wiggle_size': 0.5, # size of wiggles used to mark different parts
 
+    'flatpacked_cut_margin': 0.1 / 2, # account for any material lost during cutting process (eg. thickness of laserbeam)
+
     ##############################
     # THUMB PARAMETERS
     ##############################
