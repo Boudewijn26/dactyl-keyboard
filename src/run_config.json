@@ -26,6 +26,8 @@
     "flatpacked_thickness": 2.0,
     "flatpacked_key_support_end_margin": 2.0,
     "flatpacked_base_support_joint_side_margin": 1.0,
+    "flatpacked_key_support_cut_height": 1.5,
+    "flatpacked_thumb_key_support_cut_height": 1.0,
     "flatpacked_finger_joint_min_size": 4.0,
     "flatpacked_finger_joint_max_size": 8.0,
     "flatpacked_bottom_base_support_cutout": [

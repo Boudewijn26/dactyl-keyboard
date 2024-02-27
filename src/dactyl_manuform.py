@@ -1204,6 +1204,7 @@ def key_support(column, column_side, cluster):
 
 
 def key_support_base_support_cuts(column, column_side, cluster):
+    height = flatpacked_key_support_cut_height if cluster == 'main' else flatpacked_thumb_key_support_cut_height
     def _cut(vside):
         # need to account for the column tilt and take the bigger cut
         (
@@ -1225,7 +1226,7 @@ def key_support_base_support_cuts(column, column_side, cluster):
             column_side,
             "outside",
             vside,
-            (0, 0, flatpacked_thickness - flatpacked_cut_margin),
+            (0, 0, height - flatpacked_cut_margin),
             cluster=cluster,
         )
         top_left_x, top_left_y, _ = base_support_key_support_intersection(
@@ -1234,7 +1235,7 @@ def key_support_base_support_cuts(column, column_side, cluster):
             column_side,
             "outside",
             vside,
-            (0, 0, flatpacked_thickness - flatpacked_cut_margin),
+            (0, 0, height - flatpacked_cut_margin),
             cluster=cluster,
         )
 
@@ -1422,16 +1423,17 @@ def base_support_column_cutout(vside, y, column):
 
 def base_support(vside="top", cluster="main"):
     y = base_support_y(vside, cluster=cluster)
+    cut_height = flatpacked_key_support_cut_height if cluster == 'main' else flatpacked_thumb_key_support_cut_height
 
     _ncols = thumb_ncols if cluster == "thumb" else ncols
 
     def _row_intersections(col):
         approach_points = [
-            ("outside", -flatpacked_base_support_joint_side_margin, 2),
-            ("outside", flatpacked_cut_margin, 2),
-            ("outside", flatpacked_cut_margin, 1 + flatpacked_cut_margin),
-            ("inside", -flatpacked_cut_margin, 1 + flatpacked_cut_margin),
-            ("inside", -flatpacked_cut_margin, 1.75),
+            ("outside", -flatpacked_base_support_joint_side_margin, 2 * flatpacked_thickness),
+            ("outside", flatpacked_cut_margin, 2 * flatpacked_thickness),
+            ("outside", flatpacked_cut_margin, cut_height + flatpacked_cut_margin),
+            ("inside", -flatpacked_cut_margin, cut_height + flatpacked_cut_margin),
+            ("inside", -flatpacked_cut_margin, 1.75 * flatpacked_thickness),
         ]
         exit_points = reversed(approach_points)
         left_side, right_side = [
@@ -1442,10 +1444,10 @@ def base_support(vside="top", cluster="main"):
                     side,
                     face,
                     vside,
-                    (x_offset * x_offset_sign, 0, z_offset_mult * flatpacked_thickness),
+                    (x_offset * x_offset_sign, 0, z_offset),
                     cluster,
                 )
-                for face, x_offset, z_offset_mult in points
+                for face, x_offset, z_offset in points
             ]
             for side, points, x_offset_sign in [("left", approach_points, 1), ("right", exit_points, -1)]
         ]

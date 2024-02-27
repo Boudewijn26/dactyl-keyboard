@@ -26,6 +26,10 @@ break_length = 0.5 * mm2units
 minimum_break_length = 5.5 * mm2units
 break_spacing = 18.0 * mm2units
 
+# length without break at which lowered minimum break length is used
+lowered_length_break_spacing = 60.0 * mm2units
+lowered_minimum_break_length = 5.0 * mm2units
+
 extra_cut = (153.857 - 152.859) * mm2units
 
 
@@ -49,9 +53,13 @@ for p_index, path in enumerate(paths):
     treated = False
 
     for index, line in enumerate(path):
-        if (current_spacing + line.length() / 2) >= break_spacing and (
+        normal_break = (current_spacing + line.length() / 2) >= break_spacing and (
             line.length() > minimum_break_length
-        ):
+        )
+        lowered_break = (
+            current_spacing + line.length() / 2
+        ) >= lowered_length_break_spacing and (line.length() > lowered_minimum_break_length)
+        if normal_break or lowered_break:
             treated = True
             segments.extend(cut_segment(line))
             current_spacing = line.length() / 2
