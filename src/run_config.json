@@ -2,32 +2,48 @@
     "ENGINE": "solid",
     "save_dir": ".",
     "config_name": "DM",
-    "show_caps": "MX",
+    "show_caps": "CHOC",
     "show_pcbs": false,
-    "nrows": 5,
-    "ncols": 6,
-    "alpha": 0.26179916666666664,
-    "beta": 0.08726638888888888,
-    "centercol": 3,
+    "nrows": 4,
+    "ncols": 5,
+    "alpha": 0.48332153846153847,
+    "beta": 0.09519969696969696,
+    "centercol": 2.5,
     "centerrow_offset": 3,
-    "tenting_angle": 0.26179916666666664,
+    "tenting_angle": 0.6108647222222221,
     "symmetry": "symmetric",
     "column_style_gt5": "orthographic",
     "column_style": "standard",
     "reduced_inner_cols": 2,
-    "reduced_outer_cols": 0,
-    "thumb_offsets": [
-        6,
-        -3,
-        7
-    ],
-    "keyboard_z_offset": 11,
-    "extra_width": 2.5,
-    "extra_height": 1.0,
-    "web_thickness": 5.1,
+    "reduced_outer_cols": 1,
+    "keyboard_z_offset": 27,
+    "extra_width": 2,
+    "extra_height": -4.5,
+    "web_thickness": 3,
     "post_size": 0.1,
     "post_adj": 0,
-    "thumb_style": "DEFAULT",
+    "flatpacked": true,
+    "flatpacked_thickness": 2.0,
+    "flatpacked_key_support_end_margin": 2.0,
+    "flatpacked_base_support_joint_side_margin": 1.0,
+    "flatpacked_key_support_cut_height": 1.5,
+    "flatpacked_thumb_key_support_cut_height": 1.0,
+    "flatpacked_finger_joint_min_size": 4.0,
+    "flatpacked_finger_joint_max_size": 8.0,
+    "flatpacked_bottom_base_support_cutout": [
+        [
+            20,
+            43
+        ],
+        [
+            0,
+            70
+        ]
+    ],
+    "flatpacked_overextend_cable_cutout_size": 4,
+    "flatpacked_marker_wiggle_size": 0.5,
+    "flatpacked_cut_margin": 0.05,
+    "thumb_style": "DACTYLIC",
     "default_1U_cluster": true,
     "minidox_Usize": 1.6,
     "mini_index_key": true,
@@ -103,6 +119,39 @@
             -35
         ]
     ],
+    "carbonfet_thumb_offsets": [
+        [
+            -3,
+            -4,
+            0
+        ],
+        [
+            -3,
+            -4,
+            5
+        ],
+        [
+            0,
+            0,
+            0
+        ],
+        [
+            -3,
+            4,
+            6
+        ],
+        [
+            1,
+            1,
+            2
+        ],
+        [
+            -2,
+            5,
+            6
+        ]
+    ],
+    "carbonfet_right_angle_offset": -10,
     "orbyl_thumb_screw_xy_locations": [
         [
             -53,
@@ -149,6 +198,43 @@
     "thumb_plate_ml_rotation": 0.0,
     "thumb_plate_br_rotation": 0.0,
     "thumb_plate_bl_rotation": 0.0,
+    "thumb_ncols": 3,
+    "thumb_nrows": 2,
+    "thumb_alpha": 0.44879857142857144,
+    "thumb_beta": 0.44879857142857144,
+    "thumb_centercol": 0,
+    "thumb_tenting_angle": -0.26179916666666664,
+    "thumb_centerrow_offset": 1.5,
+    "thumb_extra_width": -2,
+    "thumb_extra_height": -4,
+    "thumb_yaw": 0.3490655555555555,
+    "thumb_offsets": [
+        -68,
+        -40,
+        4
+    ],
+    "thumb_column_offsets": [
+        [
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            0,
+            0
+        ]
+    ],
+    "thumb_column_alpha_offsets": [
+        0,
+        0,
+        0
+    ],
     "separable_thumb": false,
     "trackball_in_wall": false,
     "tbiw_ball_center_row": 0.2,
@@ -281,11 +367,11 @@
     "first_1_5U_row": 0,
     "last_1_5U_row": 5,
     "skeletal": false,
-    "wall_z_offset": 15,
-    "wall_x_offset": 5,
-    "wall_y_offset": 6,
-    "left_wall_x_offset": 12,
-    "left_wall_z_offset": 3,
+    "wall_z_offset": 5,
+    "wall_x_offset": 3,
+    "wall_y_offset": 3,
+    "left_wall_x_offset": 3,
+    "left_wall_z_offset": 5,
     "left_wall_lower_x_offset": 0,
     "left_wall_lower_y_offset": 0,
     "left_wall_lower_z_offset": 0,
@@ -321,7 +407,7 @@
         17.5
     ],
     "fixed_tenting": 0.0,
-    "plate_style": "NOTCH",
+    "plate_style": "HOLE",
     "hole_keyswitch_height": 14.0,
     "hole_keyswitch_width": 14.0,
     "nub_keyswitch_height": 14.4,
@@ -332,14 +418,15 @@
     "sa_profile_key_height": 12.7,
     "sa_length": 18.5,
     "sa_double_length": 37.5,
-    "plate_thickness": 5.1,
-    "plate_rim": 2.0,
+    "plate_thickness": 3,
+    "plate_rim_horizontal": 2.0,
+    "plate_rim_vertical": 3.0,
     "clip_thickness": 1.1,
     "clip_undercut": 1.0,
     "undercut_transition": 0.2,
     "plate_file": null,
     "plate_offset": 0.0,
-    "oled_mount_type": "CLIP",
+    "oled_mount_type": "NONE",
     "oled_center_row": 1.25,
     "oled_translation_offset": [
         0,
@@ -448,7 +535,7 @@
     "wire_post_height": 7,
     "wire_post_overhang": 3.5,
     "wire_post_diameter": 2.6,
-    "controller_mount_type": "EXTERNAL",
+    "controller_mount_type": "PCB_MOUNT",
     "external_holder_height": 12.5,
     "external_holder_width": 28.75,
     "external_holder_xoffset": -5.0,
@@ -470,27 +557,36 @@
     ],
     "pcb_usb_hole_size": [
         7.5,
-        10.0,
+        15.0,
         4
     ],
     "pcb_usb_hole_offset": [
         15,
-        0,
+        5,
         4.5
     ],
     "wall_thinner_size": [
         34,
         7,
-        10
+        14
     ],
     "trrs_hole_size": [
-        3,
+        6,
         20
     ],
     "trrs_offset": [
         0,
         0,
         1.5
+    ],
+    "trrs_screw_hole_size": [
+        9,
+        20
+    ],
+    "trrs_screw_offset": [
+        0,
+        15.2,
+        -3
     ],
     "pcb_screw_hole_size": [
         0.5,
@@ -508,7 +604,7 @@
     "base_rim_thickness": 5.0,
     "screw_cbore_diameter": 6.0,
     "screw_cbore_depth": 2.5,
-    "plate_holes": true,
+    "plate_holes": false,
     "plate_holes_xy_offset": [
         0.0,
         0.0
@@ -537,28 +633,28 @@
     "column_offsets": [
         [
             0,
+            -3,
+            -1
+        ],
+        [
             0,
+            -3,
+            -1
+        ],
+        [
+            -1,
+            -5,
+            -6
+        ],
+        [
+            0,
+            -8.5,
+            -5.5
+        ],
+        [
+            0,
+            -18,
             0
-        ],
-        [
-            0,
-            0,
-            0
-        ],
-        [
-            0,
-            2.82,
-            -4.5
-        ],
-        [
-            0,
-            0,
-            0
-        ],
-        [
-            0,
-            -6,
-            5
         ],
         [
             0,
@@ -570,5 +666,14 @@
             -6,
             5
         ]
+    ],
+    "column_alpha_offsets": [
+        0,
+        0,
+        0.17453277777777776,
+        0.17453277777777776,
+        0,
+        0,
+        0
     ]
 }

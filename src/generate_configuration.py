@@ -21,17 +21,18 @@ shape_config = {
     'save_dir': '.',
     'config_name':  "DM",
 
-    'show_caps': 'MX',
+    'show_caps': 'CHOC',
+    # 'show_caps': False,
     'show_pcbs': False, #only runs if caps are shown, easist place to initially inject geometry
 
-    'nrows':  5, #5,  # key rows
-    'ncols':  6, #6,  # key columns
+    'nrows':  4, #5,  # key rows
+    'ncols':  5, #6,  # key columns
 
-    'alpha':  pi / 12.0,  # curvature of the columns
-    'beta':  pi / 36.0,  # curvature of the rows
-    'centercol':  3,  # controls left_right tilt / tenting (higher number is more tenting)
+    'alpha':  pi / 6.5,  # curvature of the columns
+    'beta':  pi / 33.0,  # curvature of the rows
+    'centercol':  2.5,  # controls left_right tilt / tenting (higher number is more tenting)
     'centerrow_offset':  3,  # rows from max, controls front_back tilt
-    'tenting_angle':  pi / 12.0,  # or, change this for more precise tenting control
+    'tenting_angle': 35.0 * d2r,  # or, change this for more precise tenting control
 
     # symmetry states if it is a symmetric or asymmetric bui.  If asymmetric it doubles the generation time.
     'symmetry':  "symmetric",  # "asymmetric" or "symmetric"
@@ -39,30 +40,48 @@ shape_config = {
     'column_style_gt5':  "orthographic",
     'column_style':  "standard",  # options include :standard, :orthographic, and :fixed
     'reduced_inner_cols': 2,  #currently supports 0 or 2 due to thumb cluster attachment
-    'reduced_outer_cols': 0,
+    'reduced_outer_cols': 1,
 
-
-    'thumb_offsets':  [6, -3, 7],
     'keyboard_z_offset':  (
-        11  # controls overall height# original=9 with centercol=3# use 16 for centercol=2
+        27  # controls overall height# original=9 with centercol=3# use 16 for centercol=2
     ),
 
 
-    'extra_width': 2.5,  # extra space between the base of keys# original= 2
-    'extra_height': 1.0,  # original= 0.5
+    'extra_width': 2,  # extra space between the base of keys# original= 2
+    'extra_height': -4.5,  # original= 0.5
 
 
-    'web_thickness': 4.0 + 1.1,
+    'web_thickness': 3,
     'post_size': 0.1,
     # post_adj':  post_size / 2
     'post_adj': 0,
+
+    # 'flatpacked': False,
+    'flatpacked': True,
+    'flatpacked_thickness': 2.0,
+    'flatpacked_key_support_end_margin': 2.0, # extra straight bit after and before the keys in the key supports
+    'flatpacked_base_support_joint_side_margin': 1.0, # extra straight bit added to base supports at joint with key support
+
+    'flatpacked_key_support_cut_height': 1.5,
+    'flatpacked_thumb_key_support_cut_height': 1.0,
+
+    'flatpacked_finger_joint_min_size': 2.0 * 2, # minimum size of the fingers in the flatpacked base finger joint (minimum length = 3 times thing: 1 finger, 2 braces)
+    'flatpacked_finger_joint_max_size': 2.0 * 4, # maximum size of the fingers in the flatpacked base finger joint
+
+    'flatpacked_bottom_base_support_cutout': [(20, 43), (0, 70)], # coordinates of a cut out of the bottom base support for an (otherwise) intersecting thumb cluster
+
+    'flatpacked_overextend_cable_cutout_size': 4, # size of the cutout in the base supports for a cable to route through
+
+    'flatpacked_marker_wiggle_size': 0.5, # size of wiggles used to mark different parts
+
+    'flatpacked_cut_margin': 0.1 / 2, # account for any material lost during cutting process (eg. thickness of laserbeam)
 
     ##############################
     # THUMB PARAMETERS
     ##############################
 
-    # 'DEFAULT' 6-key, 'MINI' 5-key, 'CARBONFET' 6-key, 'MINIDOX' 3-key, 'TRACKBALL_ORBYL', 'TRACKBALL_CJ'
-    'thumb_style': 'DEFAULT',
+    # 'DEFAULT' 6-key, 'MINI' 5-key, 'CARBONFET' 6-key, 'MINIDOX' 3-key, 'TRACKBALL_ORBYL', 'TRACKBALL_CJ', 'DACTYLIC'
+    'thumb_style': 'DACTYLIC',
     'default_1U_cluster': True, # only used with default, makes top right thumb cluster key 1U
     # Thumb key size.  May need slight oversizing, check w/ caps.  Additional spacing will be automatically added for larger keys.
     'minidox_Usize': 1.6,
@@ -81,6 +100,12 @@ shape_config = {
     'minidox_separable_thumb_screw_xy_locations': [[-37, -34], [-62, 12], [10, -25]],
     'carbonfet_thumb_screw_xy_locations': [[-48, -37]],
     'carbonfet_separable_thumb_screw_xy_locations': [[-48, -37], [-52, 10], [12, -35]],
+    'carbonfet_thumb_offsets': [
+        [-3, -4, 0], [-3, -4, 5], 
+        [0, 0, 0], [-3, 4, 6], 
+        [1, 1, 2], [-2, 5, 6],
+    ],
+    'carbonfet_right_angle_offset': -10,
     'orbyl_thumb_screw_xy_locations': [[-53, -68]],
     'orbyl_separable_thumb_screw_xy_locations': [[-53, -68], [-66, 8], [10, -40]],
     'tbcj_thumb_screw_xy_locations': [[-40, -75]],
@@ -92,6 +117,35 @@ shape_config = {
     'thumb_plate_ml_rotation': 0.0,  # Mid left plate rotation tweaks as thumb cluster is crowded for hot swap, etc.
     'thumb_plate_br_rotation': 0.0,  # Bottom right plate rotation tweaks as thumb cluster is crowded for hot swap, etc.
     'thumb_plate_bl_rotation': 0.0,  # Bottom right plate rotation tweaks as thumb cluster is crowded for hot swap, etc.
+
+    'thumb_ncols': 3,
+    'thumb_nrows': 2,
+
+    'thumb_alpha': pi / 7, #pi / 40.5, # curvature of the columns
+    'thumb_beta': pi / 7.0, # curvature of the rows
+    'thumb_centercol': 0, # controls left_right tilt / tenting (higher number is more tenting)
+    'thumb_tenting_angle': -15.0 * d2r,  # or, change this for more precise tenting control
+    'thumb_centerrow_offset': 1.5,  # rows from max, controls front_back tilt
+
+    'thumb_extra_width': -2,
+    'thumb_extra_height': -4,
+
+    'thumb_yaw': 20 * d2r,
+
+    'thumb_offsets': [-68, -40, 4], # aiming for about 4, 4, 4 cm distances from index home
+
+    'thumb_column_offsets':  [
+        [0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0],
+    ],
+
+    'thumb_column_alpha_offsets': [
+        0,
+        0,
+        0,
+    ],
+
     ##############################
     # EXPERIMENTAL
     'separable_thumb': False,  #creates a separable thumb section with additional screws to hold it down.  Only attached at base.
@@ -197,11 +251,11 @@ shape_config = {
 
 
 
-    'wall_z_offset':  15,  # length of the first downward_sloping part of the wall
-    'wall_x_offset':  5,  # offset in the x and/or y direction for the first downward_sloping part of the wall (negative)
-    'wall_y_offset':  6,  # offset in the x and/or y direction for the first downward_sloping part of the wall (negative)
-    'left_wall_x_offset':  12,  # specific values for the left side due to the minimal wall.
-    'left_wall_z_offset':  3,  # specific values for the left side due to the minimal wall.
+    'wall_z_offset':  5,  # length of the first downward_sloping part of the wall
+    'wall_x_offset':  3,  # offset in the x and/or y direction for the first downward_sloping part of the wall (negative)
+    'wall_y_offset':  3,  # offset in the x and/or y direction for the first downward_sloping part of the wall (negative)
+    'left_wall_x_offset':  3,  # specific values for the left side due to the minimal wall.
+    'left_wall_z_offset':  5,  # specific values for the left side due to the minimal wall.
     'left_wall_lower_x_offset': 0,  # specific values for the lower left corner.
     'left_wall_lower_y_offset': 0,  # specific values for the lower left corner.
     'left_wall_lower_z_offset': 0,
@@ -236,7 +290,7 @@ shape_config = {
     # 'HS_UNDERCUT' = hot swap underside with undercut. Does not generate properly.  Hot swap step needs to be modified.
     # 'HS_NOTCH' = hot swap underside with notch.  Does not generate properly.  Hot swap step needs to be modified.
     # 'plate_style':  'NUB',
-    'plate_style': 'NOTCH',
+    'plate_style': 'HOLE',
 
     'hole_keyswitch_height':  14.0,
     'hole_keyswitch_width':  14.0,
@@ -251,9 +305,10 @@ shape_config = {
     'sa_profile_key_height':  12.7,
     'sa_length': 18.5,
     'sa_double_length': 37.5,
-    'plate_thickness':  4 + 1.1,
+    'plate_thickness':  3,
 
-    'plate_rim': 1.5 + 0.5,
+    'plate_rim_horizontal': 1.5 + 0.5,
+    'plate_rim_vertical': 1.5 + 1.5,
     # Undercut style dimensions
     'clip_thickness':  1.1,
     'clip_undercut':  1.0,
@@ -273,7 +328,7 @@ shape_config = {
     # 'SLIDING' = Features to slide the OLED in place and use a pin or block to secure from underneath.
     # 'CLIP' = Features to set the OLED in a frame a snap a bezel down to hold it in place.
 
-    'oled_mount_type':  'CLIP',
+    'oled_mount_type':  'NONE',
     'oled_center_row': 1.25, # if not None, this will override the oled_mount_location_xyz and oled_mount_rotation_xyz settings
     'oled_translation_offset': (0, 0, 4), # Z offset tweaks are expected depending on curvature and OLED mount choice.
     'oled_rotation_offset': (0, 0, 0),
@@ -383,7 +438,7 @@ shape_config = {
     # 'USB_TEENSY' = Teensy holder, no RJ9
     # 'EXTERNAL' = square cutout for a holder such as the one from lolligagger.
     # 'NONE' = No openings in the back.
-    'controller_mount_type':  'EXTERNAL',
+    'controller_mount_type': 'PCB_MOUNT',
 
     'external_holder_height':  12.5,
     'external_holder_width':  28.75,
@@ -399,13 +454,16 @@ shape_config = {
     "pcb_holder_size": [34.6, 7, 4],
     "pcb_holder_offset": [8.9, 0, 0],
 
-    "pcb_usb_hole_size": [7.5, 10.0, 4],
-    "pcb_usb_hole_offset": [15, 0, 4.5],
+    "pcb_usb_hole_size": [7.5, 15.0, 4],
+    "pcb_usb_hole_offset": [15, 5, 4.5],
 
-    "wall_thinner_size": [34, 7, 10],
+    "wall_thinner_size": [34, 7, 14],
 
-    "trrs_hole_size": [3, 20],
+    "trrs_hole_size": [6, 20],
     "trrs_offset": [0, 0, 1.5],
+
+    "trrs_screw_hole_size": [9, 20],
+    "trrs_screw_offset": [0, 15.2, -3],
 
     "pcb_screw_hole_size": [.5, 10],
     "pcb_screw_x_offsets": [- 5.5, 7.75, 22], # for the screw positions off of reference
@@ -429,7 +487,7 @@ shape_config = {
     ###################################
     ## HOLES ON PLATE FOR PCB MOUNT
     ###################################
-    'plate_holes':  True,
+    'plate_holes':  False,
     'plate_holes_xy_offset': (0.0, 0.0),
     'plate_holes_width': 14.3,
     'plate_holes_height': 14.3,
@@ -458,15 +516,24 @@ shape_config = {
     ####################################
 
     'column_offsets':  [
-        [0, 0, 0],
-        [0, 0, 0],
-        [0, 2.82, -4.5],
-        [0, 0, 0],
-        [0, -6, 5],# REDUCED STAGGER
+        [0, -3, -1],
+        [0, -3, -1],
+        [-1, -5, -6],
+        [0, -8.5, -5.5],
+        [0, -18, 0],# REDUCED STAGGER
         [0, -6, 5],# REDUCED STAGGER
         [0, -6, 5],# NOT USED IN MOST FORMATS (7th column)
     ],
 
+    'column_alpha_offsets': [
+        0,
+        0,
+        10 * d2r,
+        10 * d2r,
+        0,
+        0,
+        0
+    ]
 }
 
     ####################################
