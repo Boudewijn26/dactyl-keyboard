@@ -1,0 +1,12 @@
+file_format: "1"
+id: mr_allen
+name: "Mr Allen"
+type: shield
+url: https://github.com/Boudewijn26/dactyl-zmk-config
+requires: [seeed_xiao]
+exposes: []
+features:
+  - keys
+siblings:
+  - mr_allen_left
+  - mr_allen_right

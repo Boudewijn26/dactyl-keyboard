@@ -1,0 +1,21 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+
+/ {
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+// | SW5  | SW4  | SW3  | SW2  | SW1  |                                            | SW1  | SW2  | SW3  | SW4  | SW5  |
+// | SW10 | SW9  | SW8  | SW7  | SW6  |                                            | SW6  | SW7  | SW8  | SW9  | SW10 |
+// | SW15 | SW14 | SW13 | SW12 | SW11 | SW18 | SW19 | SW20 |  | SW20 | SW19 | SW18 | SW11 | SW12 | SW13 | SW14 | SW15 |
+//        | SW17 | SW16 |               SW21 | SW22 | SW23 |  | SW23 | SW22 | SW21 |             | SW16 | SW17 |
+            bindings = <
+    &kp Q  &kp W  &kp E  &kp R  &kp T                                                                 &kp Y  &kp U  &kp I      &kp O    &kp P
+    &kp A  &kp S  &kp D  &kp F  &kp G                                                                 &kp H  &kp J  &kp K      &kp L    &kp SEMI
+    &kp Z  &kp X  &kp C  &kp V  &kp B  &kp LALT   &kp RET   &kp ESC     &kp TAB   &kp RET   &kp LCTRL   &kp N  &kp M  &kp COMMA  &kp DOT  &kp FSLH
+           &kp X  &kp C              &kp LGUI   &kp SPACE  &kp LSHIFT   &kp BKSP  &kp RET  &kp RSHIFT                &kp COMMA  &kp DOT
+            >;
+        };
+    };
+};
